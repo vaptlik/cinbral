@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "cinebral",
+    "slug": "cinebral",
+    "version": "1.0.0",
+    "scheme": "cinestream",
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}

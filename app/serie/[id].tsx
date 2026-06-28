@@ -4,7 +4,6 @@ import {
   ActivityIndicator, useWindowDimensions, FlatList, Platform,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Linking } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getTvDetails, getTvSeasons, getTvSeasonEpisodes, TmdbEpisode, TmdbSeason } from '../../services/api';
 import { addToWatchlist, removeFromWatchlist, isInWatchlist } from '../../services/storage';
@@ -22,6 +21,7 @@ export default function SerieDetailScreen() {
   const [serie, setSerie]           = useState<Movie | null>(null);
   const [seasons, setSeasons]       = useState<TmdbSeason[]>([]);
   const [selectedSeason, setSelectedSeason] = useState(1);
+  const selectedSeasonRef = React.useRef(1);
   const [episodes, setEpisodes]     = useState<TmdbEpisode[]>([]);
   const [saved, setSaved]           = useState(false);
   const [loading, setLoading]       = useState(true);
@@ -40,7 +40,10 @@ export default function SerieDetailScreen() {
         // Filtra temporadas válidas (sem season 0 = especiais)
         const validSeasons = seasonsData.seasons.filter(s => s.season_number > 0);
         setSeasons(validSeasons);
-        if (validSeasons.length > 0) setSelectedSeason(validSeasons[0].season_number);
+        if (validSeasons.length > 0) {
+          setSelectedSeason(validSeasons[0].season_number);
+          selectedSeasonRef.current = validSeasons[0].season_number;
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -73,13 +76,10 @@ export default function SerieDetailScreen() {
   }
 
   function watchEpisode(ep: number) {
-    const url = `https://superflixapi.lifestyle/serie/${id}/${selectedSeason}/${ep}`;
-    
-    if (Platform.OS === 'web') {
-      router.push({ pathname: '/player', params: { id, type: 'serie', season: selectedSeason, episode: ep } });
-    } else {
-      Linking.openURL(url);
-    }
+    const s = String(selectedSeasonRef.current);
+    const e = String(ep);
+    console.log(`Abrindo S${s}E${e} da série ${id}`);
+    router.push({ pathname: '/player', params: { id, type: 'serie', season: s, episode: e } });
   }
 
   if (loading) return (
@@ -146,7 +146,7 @@ export default function SerieDetailScreen() {
                 <TouchableOpacity
                   key={s.season_number}
                   style={[styles.seasonBtn, selectedSeason === s.season_number && styles.seasonBtnActive]}
-                  onPress={() => setSelectedSeason(s.season_number)}
+                  onPress={() => { setSelectedSeason(s.season_number); selectedSeasonRef.current = s.season_number; }}
                 >
                   <Text style={[styles.seasonBtnText, selectedSeason === s.season_number && styles.seasonBtnTextActive]}>
                     T{s.season_number}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Linking, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getMovieDetails, getTvDetails } from '../../services/api';
 import { addToWatchlist, removeFromWatchlist, isInWatchlist } from '../../services/storage';
@@ -57,11 +57,7 @@ export default function MovieDetailsScreen() {
   const ActionButtons = () => (
     <View style={styles.actionRow}>
       <TouchableOpacity style={styles.playButton} onPress={() => {
-        if (Platform.OS === 'web') {
-          router.push({ pathname: '/player', params: { id: movie!.id, type } });
-        } else {
-          Linking.openURL(`https://superflixapi.lifestyle/${type}/${movie!.id}`);
-        }
+        router.push({ pathname: '/player', params: { id: movie!.id, type } });
       }}>
         <Text style={styles.playIcon}>▶</Text>
         <Text style={styles.playButtonText}>Assistir Agora</Text>

@@ -3,10 +3,21 @@
     "name": "cinebral",
     "slug": "cinebral",
     "version": "1.0.0",
+    "sdkVersion": "52.0.0",
     "scheme": "cinestream",
     "plugins": [
       "expo-font",
-      "expo-video"
-    ]
+      "expo-video",
+      "expo-asset",
+      "expo-router"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d3de3339-89a0-45ed-b72c-404b0b605b07"
+      }
+    },
+    "android": {
+      "package": "com.cabrallcin.cinebral"
+    }
   }
 }

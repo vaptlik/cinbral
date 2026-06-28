@@ -1,4 +1,5 @@
 import { Movie, TmdbListResponse, TmdbMovieDetailDto, TmdbMovieDto } from '../types';
+import { getCached, setCached } from './storage';
 
 const API_KEY = 'fc4d788f8bcd16ad159293355ce31402';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -83,16 +84,24 @@ async function get<T>(path: string, params: Record<string, string> = {}): Promis
 }
 
 export async function getPopularMovies(): Promise<Movie[]> {
+  const cached = await getCached<Movie[]>('popular');
+  if (cached) return cached;
   const [p1, p2] = await Promise.all([
     get<TmdbListResponse>('/movie/popular', { page: '1' }),
     get<TmdbListResponse>('/movie/popular', { page: '2' }),
   ]);
-  return dedup(shuffle([...p1.results, ...p2.results]).map(toMovie));
+  const result = dedup(shuffle([...p1.results, ...p2.results]).map(toMovie));
+  await setCached('popular', result);
+  return result;
 }
 
 export async function getTrendingMovies(): Promise<Movie[]> {
+  const cached = await getCached<Movie[]>('trending');
+  if (cached) return cached;
   const data = await get<TmdbListResponse>('/trending/movie/week');
-  return data.results.map(toMovie);
+  const result = data.results.map(toMovie);
+  await setCached('trending', result);
+  return result;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -163,6 +172,9 @@ export async function getTvDetails(id: string): Promise<Movie> {
 }
 
 async function getByGenre(genreId: string): Promise<Movie[]> {
+  const cacheKey = `genre_${genreId}`;
+  const cached = await getCached<Movie[]>(cacheKey);
+  if (cached) return cached;
   const [byVotes, byPop] = await Promise.all([
     get<TmdbListResponse>('/discover/movie', {
       with_genres: genreId,
@@ -176,7 +188,9 @@ async function getByGenre(genreId: string): Promise<Movie[]> {
       page: String(Math.floor(Math.random() * 3) + 1),
     }),
   ]);
-  return dedup(shuffle([...byVotes.results, ...byPop.results]).map(toMovie));
+  const result = dedup(shuffle([...byVotes.results, ...byPop.results]).map(toMovie));
+  await setCached(cacheKey, result);
+  return result;
 }
 
 export async function getActionMovies(): Promise<Movie[]> {

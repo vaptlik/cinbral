@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, Image, Pressable, View } from 'react-native';
+import { StyleSheet, Text, Pressable, View } from 'react-native';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { MovieCardProps } from '../types';
 
@@ -15,7 +16,14 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
         }
       }}
     >
-      <Image source={{ uri: movie.posterUrl }} style={styles.poster} resizeMode="cover" />
+      <Image
+        source={{ uri: movie.posterUrl }}
+        style={styles.poster}
+        contentFit="cover"
+        cachePolicy="disk"
+        transition={150}
+        placeholder={{ color: '#1e2020' }}
+      />
       <View style={styles.badgeContainer}>
         <Text style={styles.badgeText}>★ {movie.rating.toFixed(1)}</Text>
       </View>
@@ -29,11 +37,11 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
 };
 
 const styles = StyleSheet.create({
-  card: { width: 140, height: 210, borderRadius: 8, overflow: 'hidden', backgroundColor: '#1e1e1e', position: 'relative' },
-  pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
-  poster: { width: '100%', height: '100%' },
+  card:        { width: 140, height: 210, borderRadius: 8, overflow: 'hidden', backgroundColor: '#1e2020', position: 'relative' },
+  pressed:     { opacity: 0.8, transform: [{ scale: 0.98 }] },
+  poster:      { width: '100%', height: '100%' },
   badgeContainer: { position: 'absolute', top: 8, right: 8, backgroundColor: 'rgba(0,0,0,0.75)', paddingHorizontal: 6, paddingVertical: 4, borderRadius: 4 },
-  badgeText: { color: '#FFD700', fontSize: 11, fontWeight: 'bold' },
-  serieBadge: { position: 'absolute', bottom: 8, left: 8, backgroundColor: '#f5c518', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  badgeText:   { color: '#FFD700', fontSize: 11, fontWeight: 'bold' },
+  serieBadge:  { position: 'absolute', bottom: 8, left: 8, backgroundColor: '#f5c518', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   serieBadgeText: { color: '#3d2f00', fontSize: 9, fontWeight: 'bold' },
 });

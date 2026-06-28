@@ -28,3 +28,30 @@ export async function isInWatchlist(id: string): Promise<boolean> {
   const list = await getWatchlist();
   return list.some(m => m.id === id);
 }
+
+// ─── Cache de dados da API (TTL em ms) ───────────────────────────────────────
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 horas
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+export async function getCached<T>(key: string): Promise<T | null> {
+  try {
+    const raw = await AsyncStorage.getItem(`@cache:${key}`);
+    if (!raw) return null;
+    const entry: CacheEntry<T> = JSON.parse(raw);
+    if (Date.now() - entry.timestamp > CACHE_TTL) return null;
+    return entry.data;
+  } catch {
+    return null;
+  }
+}
+
+export async function setCached<T>(key: string, data: T): Promise<void> {
+  try {
+    const entry: CacheEntry<T> = { data, timestamp: Date.now() };
+    await AsyncStorage.setItem(`@cache:${key}`, JSON.stringify(entry));
+  } catch {}
+}

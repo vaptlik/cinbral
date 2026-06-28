@@ -9,6 +9,7 @@ export interface Movie {
   cast: string[];
   genres: string[];
   duration?: string;
+  mediaType?: 'filme' | 'serie';
 }
 
 export interface MovieCardProps {

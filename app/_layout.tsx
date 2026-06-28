@@ -23,6 +23,7 @@ export default function RootLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="movie/[id]" />
+      <Stack.Screen name="serie/[id]" />
       <Stack.Screen name="player" options={{ animation: 'slide_from_bottom' }} />
     </Stack>
   );

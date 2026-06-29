@@ -46,12 +46,10 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-      // Esconde a barra de status completamente no player
       StatusBar.setHidden(true, 'fade');
     }
     return () => {
       if (Platform.OS !== 'web') {
-        // Restaura ao sair do player
         StatusBar.setHidden(false, 'fade');
         StatusBar.setTranslucent(true);
         StatusBar.setBackgroundColor('transparent');
@@ -91,36 +89,6 @@ export default function PlayerScreen() {
         allowsInlineMediaPlayback
         startInLoadingState
         mixedContentMode="always"
-        injectedJavaScript={`
-          (function() {
-            document.addEventListener('click', function(e) {
-              var el = e.target;
-              while (el && el.tagName !== 'A') el = el.parentElement;
-              if (el && el.href) {
-                var url = el.href;
-                if (!url.includes('myembed.biz') && !url.includes('embedmovies.org') && !url.startsWith('blob:') && !url.startsWith('about:')) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  return false;
-                }
-              }
-            }, true);
-            window.open = function() { return null; };
-          })();
-        `}
-        onShouldStartLoadWithRequest={request => {
-          const url = request.url;
-          if (
-            url.startsWith('intent://') ||
-            url.startsWith('market://') ||
-            url.startsWith('whatsapp://') ||
-            url.startsWith('tel:') ||
-            url.startsWith('mailto:')
-          ) {
-            return false;
-          }
-          return true;
-        }}
       />
     </View>
   );

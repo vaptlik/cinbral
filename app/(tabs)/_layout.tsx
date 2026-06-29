@@ -1,17 +1,7 @@
 import { Tabs } from 'expo-router';
-import { StyleSheet, View, Text } from 'react-native';
-
-// Mini componente para renderizar ícones baseados em texto/emoji de forma limpa
-// Nota: Se futuramente instalar o @expo/vector-icons, poderá substituí-los aqui.
-function TabIcon({ icon, focused }: { icon: string; focused: boolean }) {
-  return (
-    <View style={styles.iconContainer}>
-      <Text style={[styles.iconText, { opacity: focused ? 1 : 0.6 }]}>
-        {icon}
-      </Text>
-    </View>
-  );
-}
+import { StyleSheet } from 'react-native';
+// Importando os ícones nativos do Expo
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function TabsLayout() {
   return (
@@ -40,7 +30,13 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ focused }) => <TabIcon icon="🏠" focused={focused} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "home" : "home-outline"} 
+              size={22} 
+              color={color} 
+            />
+          ),
         }}
       />
 
@@ -49,7 +45,13 @@ export default function TabsLayout() {
         name="search"
         options={{
           title: 'Busca',
-          tabBarIcon: ({ focused }) => <TabIcon icon="🔍" focused={focused} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "search" : "search-outline"} 
+              size={22} 
+              color={color} 
+            />
+          ),
         }}
       />
 
@@ -58,24 +60,30 @@ export default function TabsLayout() {
         name="watchlist"
         options={{
           title: 'Minha Lista',
-          tabBarIcon: ({ focused }) => <TabIcon icon="🔖" focused={focused} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "bookmark" : "bookmark-outline"} 
+              size={22} 
+              color={color} 
+            />
+          ),
         }}
-        />
-        {/* Nova Aba Profile adicionada aqui */}
+      />
+
+      {/* Aba Perfil (profile.tsx) */}
       <Tabs.Screen 
         name="profile" 
-        options={{ title: 'Perfil', tabBarIcon: () => <Text style={{fontSize: 20}}>👤</Text> }} 
+        options={{ 
+          title: 'Perfil', 
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "person" : "person-outline"} 
+              size={22} 
+              color={color} 
+            />
+          ),
+        }} 
       />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 20,
-  },
-});

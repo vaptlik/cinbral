@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet, View, StatusBar } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,11 +22,30 @@ export default function RootLayout() {
   if (!loaded && !error) return null;
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="movie/[id]" />
-      <Stack.Screen name="serie/[id]" />
-      <Stack.Screen name="player" options={{ animation: 'slide_from_bottom' }} />
-    </Stack>
+    <SafeAreaProvider>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+      <View style={styles.root}>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#121414' } }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="movie/[id]" />
+          <Stack.Screen name="serie/[id]" />
+          <Stack.Screen
+            name="player"
+            options={{
+              animation: 'slide_from_bottom',
+              contentStyle: { backgroundColor: '#000' },
+            }}
+          />
+        </Stack>
+      </View>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#121414' },
+});

@@ -3,6 +3,7 @@ import {
   StyleSheet, View, Text, ScrollView, TouchableOpacity,
   ImageBackground, ActivityIndicator, useWindowDimensions, Image,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { MovieRow } from '../../components/MovieRow';
 import {
@@ -17,6 +18,7 @@ const AUTO_SCROLL_INTERVAL = 5000;
 
 export default function HomeScreen() {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const [heroMovies, setHeroMovies] = useState<Movie[]>([]);
   const [rows, setRows] = useState<{ title: string; movies: Movie[] }[]>([]);
@@ -90,7 +92,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { paddingTop: insets.top }]}
       showsVerticalScrollIndicator={false}
       removeClippedSubviews={true}
     >
@@ -179,4 +181,4 @@ const styles = StyleSheet.create({
   dot:            { width: 6, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.4)' },
   dotActive:      { width: 20, backgroundColor: '#f5c518' },
   mainContent:    { marginTop: 10, paddingBottom: 80 },
-}); 
+});
